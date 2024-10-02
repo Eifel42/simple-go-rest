@@ -1,13 +1,14 @@
-package main
+package tests
 
 import (
+	handler2 "customers/handler"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-// Tests happy path of submitting a well-formed GET /customers request
+// Tests happy path of submitting a well-formed GET /pkg request
 func TestGetCustomersHandler(t *testing.T) {
 	req, err := http.NewRequest("GET", "/customers", nil)
 
@@ -16,7 +17,7 @@ func TestGetCustomersHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(getCustomers)
+	handler := http.HandlerFunc(handler2.getCustomers)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 200 status code
@@ -32,7 +33,7 @@ func TestGetCustomersHandler(t *testing.T) {
 	}
 }
 
-// Tests happy path of submitting a well-formed POST /customers request
+// Tests happy path of submitting a well-formed POST /pkg request
 func TestAddCustomerHandler(t *testing.T) {
 	requestBody := strings.NewReader(`
 		{
@@ -51,7 +52,7 @@ func TestAddCustomerHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(addCustomer)
+	handler := http.HandlerFunc(handler2.addCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 201 status code
@@ -76,7 +77,7 @@ func TestDeleteCustomerHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(deleteCustomer)
+	handler := http.HandlerFunc(handler2.deleteCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 404 status code
@@ -95,7 +96,7 @@ func TestGetCustomerHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(getCustomer)
+	handler := http.HandlerFunc(handler2.getCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 404 status code

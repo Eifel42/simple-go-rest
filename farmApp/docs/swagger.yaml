@@ -1,0 +1,165 @@
+basePath: /
+definitions:
+  api.Customer:
+    properties:
+      contacted:
+        type: boolean
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
+  api.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple API for managing farm customers.
+  title: Farm Customer API
+  version: "1.0"
+paths:
+  /customers:
+    get:
+      description: Get all customers
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/api.Customer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get all customers
+      tags:
+      - customers
+    post:
+      consumes:
+      - application/json
+      description: Add a new customer
+      parameters:
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Add a new customer
+      tags:
+      - customers
+  /customers/{id}:
+    delete:
+      description: Delete a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Delete a customer
+      tags:
+      - customers
+    get:
+      description: Get a customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get a customer by ID
+      tags:
+      - customers
+    put:
+      consumes:
+      - application/json
+      description: Update a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Update a customer
+      tags:
+      - customers
+swagger: "2.0"
