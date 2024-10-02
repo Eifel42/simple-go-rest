@@ -91,6 +91,10 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/api.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
@@ -133,11 +137,6 @@ paths:
       - application/json
       description: Update a customer
       parameters:
-      - description: Customer ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Customer
         in: body
         name: customer

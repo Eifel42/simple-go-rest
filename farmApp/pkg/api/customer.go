@@ -1,7 +1,7 @@
 package api
 
 type Customer struct {
-	ID        int    `json:"id"`
+	ID        *int   `json:"id,omitempty"`
 	Name      string `json:"name"`
 	Role      string `json:"role"`
 	Email     string `json:"email"`

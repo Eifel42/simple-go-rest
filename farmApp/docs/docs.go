@@ -148,13 +148,6 @@ const docTemplate = `{
                 "summary": "Update a customer",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Customer ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Customer",
                         "name": "customer",
                         "in": "body",
@@ -206,6 +199,12 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/api.ErrorResponse"
                         }

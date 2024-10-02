@@ -1,15 +1,18 @@
-package tests
+package main
 
 import (
-	handler2 "customers/handler"
+	handlerApp "farmApp/pkg/handler"
+	"farmApp/pkg/persistence"
+	"github.com/gorilla/mux"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 )
 
-// Tests happy path of submitting a well-formed GET /pkg request
+// Tests happy path of submitting a well-formed GET /customers request
 func TestGetCustomersHandler(t *testing.T) {
+	persistence.CreateDB("./test1.db")
 	req, err := http.NewRequest("GET", "/customers", nil)
 
 	if err != nil {
@@ -17,7 +20,7 @@ func TestGetCustomersHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler2.getCustomers)
+	handler := http.HandlerFunc(handlerApp.GetCustomers)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 200 status code
@@ -33,14 +36,15 @@ func TestGetCustomersHandler(t *testing.T) {
 	}
 }
 
-// Tests happy path of submitting a well-formed POST /pkg request
+// Tests happy path of submitting a well-formed POST /customers request
 func TestAddCustomerHandler(t *testing.T) {
+	persistence.CreateDB("./test2.db")
 	requestBody := strings.NewReader(`
 		{
 			"name": "Example Name",
 			"role": "Example Role",
 			"email": "Example Email",
-			"phone": 5550199,
+			"phone": "5550199",
 			"contacted": true
 		}
 	`)
@@ -52,7 +56,7 @@ func TestAddCustomerHandler(t *testing.T) {
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler2.addCustomer)
+	handler := http.HandlerFunc(handlerApp.AddCustomer)
 	handler.ServeHTTP(rr, req)
 
 	// Checks for 201 status code
@@ -70,15 +74,17 @@ func TestAddCustomerHandler(t *testing.T) {
 
 // Tests unhappy path of deleting a user that doesn't exist
 func TestDeleteCustomerHandler(t *testing.T) {
-	req, err := http.NewRequest("DELETE", "/customers/e7847fee-3a0e-455e-b151-519bdb9851c7", nil)
+	persistence.CreateDB("./test3.db")
+	req, err := http.NewRequest("DELETE", "/customers/222", nil)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler2.deleteCustomer)
-	handler.ServeHTTP(rr, req)
+	router := mux.NewRouter()
+	router.HandleFunc("/customers/{id}", handlerApp.DeleteCustomer).Methods("DELETE")
+	router.ServeHTTP(rr, req)
 
 	// Checks for 404 status code
 	if status := rr.Code; status != http.StatusNotFound {
@@ -89,15 +95,17 @@ func TestDeleteCustomerHandler(t *testing.T) {
 
 // Tests unhappy path of getting a user that doesn't exist
 func TestGetCustomerHandler(t *testing.T) {
-	req, err := http.NewRequest("GET", "/customers/e7847fee-3a0e-455e-b151-519bdb9851c7", nil)
+	persistence.CreateDB("./test4.db")
+	req, err := http.NewRequest("GET", "/customers/1000", nil)
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handler2.getCustomer)
-	handler.ServeHTTP(rr, req)
+	router := mux.NewRouter()
+	router.HandleFunc("/customers/{id}", handlerApp.GetCustomer).Methods("GET")
+	router.ServeHTTP(rr, req)
 
 	// Checks for 404 status code
 	if status := rr.Code; status != http.StatusNotFound {
