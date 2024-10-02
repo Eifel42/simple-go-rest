@@ -69,6 +69,7 @@ func GetCustomer(w http.ResponseWriter, r *http.Request) {
 // @Router /customers [post]
 func AddCustomer(w http.ResponseWriter, r *http.Request) {
 	var customer api.Customer
+
 	if err := json.NewDecoder(r.Body).Decode(&customer); err != nil {
 		handleError(w, err, http.StatusBadRequest)
 		return
@@ -79,7 +80,9 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 		handleError(w, err, http.StatusInternalServerError)
 		return
 	}
-	customer.ID = id
+
+	customer.ID = &id
+	w.WriteHeader(http.StatusCreated)
 	encodeJSONResponse(w, customer)
 }
 
@@ -88,32 +91,32 @@ func AddCustomer(w http.ResponseWriter, r *http.Request) {
 // @Tags customers
 // @Accept json
 // @Produce json
-// @Param id path int true "Customer ID"
 // @Param customer body api.Customer true "Customer"
 // @Success 200 {object} api.Customer
 // @Failure 400 {object} api.ErrorResponse
 // @Failure 500 {object} api.ErrorResponse
 // @Router /customers/{id} [put]
 func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-	if err != nil {
-		handleError(w, err, http.StatusBadRequest)
-		return
-	}
-
 	var customer api.Customer
 	if err := json.NewDecoder(r.Body).Decode(&customer); err != nil {
 		handleError(w, err, http.StatusBadRequest)
 		return
 	}
 
-	err = persistence.UpdateCustomer(id, customer)
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		handleError(w, err, http.StatusBadRequest)
+		return
+	}
+	customer.ID = &id
+
+	err = persistence.UpdateCustomer(*customer.ID, customer)
 	if err != nil {
 		handleError(w, err, http.StatusInternalServerError)
 		return
 	}
-	customer.ID = id
+
 	encodeJSONResponse(w, customer)
 }
 
@@ -123,6 +126,7 @@ func UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 // @Param id path int true "Customer ID"
 // @Success 204
 // @Failure 400 {object} api.ErrorResponse
+// @Failure 404 {object} api.ErrorResponse
 // @Failure 500 {object} api.ErrorResponse
 // @Router /customers/{id} [delete]
 func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
@@ -130,6 +134,16 @@ func DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
 		handleError(w, err, http.StatusBadRequest)
+		return
+	}
+
+	_, err = persistence.GetCustomerByID(id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "Customer not found", http.StatusNotFound)
+		} else {
+			handleError(w, err, http.StatusInternalServerError)
+		}
 		return
 	}
 

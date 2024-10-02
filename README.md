@@ -12,7 +12,7 @@ FarmApp is a simple Go application for managing farm customers. It provides a RE
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Eifel42/udacity-go.git
+git clone https://github.com/Eifel42/simple-go-rest.git
 cd farmApp
 ```
 

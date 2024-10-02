@@ -7,11 +7,13 @@ import (
 	"os"
 )
 
-const databaseName = "./farmCustomers.db"
-
 var db *sql.DB
 
 func CreateFarmDB() {
+	CreateDB("./farmCustomers.db")
+}
+
+func CreateDB(databaseName string) {
 	deleteDB(databaseName)
 	var err error
 	db, err = sql.Open("sqlite3", databaseName)
