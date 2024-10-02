@@ -60,11 +60,6 @@ The application will be available at `http://localhost:8080`.
 ### 4. Accessing the Application
 
 - **Swagger Documentation**: `http://localhost:8080/swagger/`
-- **Static Pages**:
-    - **Add Customer**: `http://localhost:8080/static/add_customer.html`
-    - **View Customers**: `http://localhost:8080/static/view_customers.html`
-    - **Update Customer**: `http://localhost:8080/static/update_customer.html`
-    - **Delete Customer**: `http://localhost:8080/static/delete_customer.html`
 
 ### 5. API Endpoints
 - **GET** `/customers` - Retrieve all customers.
