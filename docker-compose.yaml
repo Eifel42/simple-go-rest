@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  farmapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /app/farmApp
+    command: go run main.go
+    ports:
+      - "8080:8080"

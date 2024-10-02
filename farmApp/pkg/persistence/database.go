@@ -2,11 +2,12 @@ package persistence
 
 import (
 	"database/sql"
+	"farmApp/pkg/api"
 	"log"
 	"os"
 )
 
-const databaseName = "./db/farmCustomers.db"
+const databaseName = "./farmCustomers.db"
 
 var db *sql.DB
 
@@ -85,8 +86,8 @@ func insertInitialCustomers() error {
 	}
 
 	if count == 0 {
-		log.Println("No pkg found. Inserting initial data...")
-		customers := []entities.Customer{
+		log.Println("No customers found. Inserting initial data...")
+		customers := []api.Customer{
 			{Name: "Bauer Klaus", Role: "Farmer", Email: "klaus.bauer@farm.de", Phone: "01234 567890", Contacted: true},
 			{Name: "Bauerin Anna", Role: "Owner", Email: "anna.bauerin@farm.de", Phone: "01234 567891", Contacted: false},
 			{Name: "Müller Hans", Role: "Worker", Email: "hans.mueller@farm.de", Phone: "01234 567892", Contacted: true},
@@ -103,14 +104,14 @@ func insertInitialCustomers() error {
 		if err != nil {
 			return err
 		}
-		log.Println("Inserted initial pkg.")
+		log.Println("Inserted initial customers.")
 	} else {
 		log.Println("Customers already exist in the database.")
 	}
 	return nil
 }
 
-func bulkInsertCustomers(customers []model.Customer) error {
+func bulkInsertCustomers(customers []api.Customer) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
@@ -145,6 +146,54 @@ func bulkInsertCustomers(customers []model.Customer) error {
 	return tx.Commit()
 }
 
-type ErrorResponse struct {
-	Message string `json:"message"`
+func GetCustomers() ([]api.Customer, error) {
+	rows, err := db.Query("SELECT id, name, role, email, phone, contacted FROM customer")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var customers []api.Customer
+	for rows.Next() {
+		var customer api.Customer
+		if err := rows.Scan(&customer.ID, &customer.Name, &customer.Role, &customer.Email, &customer.Phone, &customer.Contacted); err != nil {
+			return nil, err
+		}
+		customers = append(customers, customer)
+	}
+	return customers, nil
+}
+
+func GetCustomerByID(id int) (api.Customer, error) {
+	var customer api.Customer
+	err := db.QueryRow("SELECT id, name, role, email, phone, contacted FROM customer WHERE id = ?", id).Scan(
+		&customer.ID, &customer.Name, &customer.Role, &customer.Email, &customer.Phone, &customer.Contacted)
+	if err != nil {
+		return customer, err
+	}
+	return customer, nil
+}
+
+func AddCustomer(customer api.Customer) (int, error) {
+	result, err := db.Exec("INSERT INTO customer (name, role, email, phone, contacted) VALUES (?, ?, ?, ?, ?)",
+		customer.Name, customer.Role, customer.Email, customer.Phone, customer.Contacted)
+	if err != nil {
+		return 0, err
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	return int(id), nil
+}
+
+func UpdateCustomer(id int, customer api.Customer) error {
+	_, err := db.Exec("UPDATE customer SET name = ?, role = ?, email = ?, phone = ?, contacted = ? WHERE id = ?",
+		customer.Name, customer.Role, customer.Email, customer.Phone, customer.Contacted, id)
+	return err
+}
+
+func DeleteCustomer(id int) error {
+	_, err := db.Exec("DELETE FROM customer WHERE id = ?", id)
+	return err
 }

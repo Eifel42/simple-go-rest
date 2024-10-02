@@ -1,6 +1,6 @@
 basePath: /
 definitions:
-  main.Customer:
+  api.Customer:
     properties:
       contacted:
         type: boolean
@@ -15,7 +15,7 @@ definitions:
       role:
         type: string
     type: object
-  main.ErrorResponse:
+  api.ErrorResponse:
     properties:
       message:
         type: string
@@ -23,13 +23,13 @@ definitions:
 host: localhost:8080
 info:
   contact: {}
-  description: This is a simple API for managing farm pkg.
+  description: This is a simple API for managing farm customers.
   title: Farm Customer API
   version: "1.0"
 paths:
   /customers:
     get:
-      description: Get all pkg
+      description: Get all customers
       produces:
       - application/json
       responses:
@@ -37,32 +37,44 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/main.Customer'
+              $ref: '#/definitions/api.Customer'
             type: array
-      summary: Get all pkg
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: Get all customers
       tags:
-      - pkg
+      - customers
     post:
       consumes:
       - application/json
       description: Add a new customer
       parameters:
-      - description: Customer to add
+      - description: Customer
         in: body
         name: customer
         required: true
         schema:
-          $ref: '#/definitions/main.Customer'
+          $ref: '#/definitions/api.Customer'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Customer'
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Add a new customer
       tags:
-      - pkg
+      - customers
   /customers/{id}:
     delete:
       description: Delete a customer
@@ -75,13 +87,17 @@ paths:
       responses:
         "204":
           description: No Content
-        "404":
-          description: Not Found
+        "400":
+          description: Bad Request
           schema:
-            $ref: '#/definitions/main.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Delete a customer
       tags:
-      - pkg
+      - customers
     get:
       description: Get a customer by ID
       parameters:
@@ -96,14 +112,22 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Customer'
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/main.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Get a customer by ID
       tags:
-      - pkg
+      - customers
     put:
       consumes:
       - application/json
@@ -114,24 +138,28 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Customer to update
+      - description: Customer
         in: body
         name: customer
         required: true
         schema:
-          $ref: '#/definitions/main.Customer'
+          $ref: '#/definitions/api.Customer'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Customer'
-        "404":
-          description: Not Found
+            $ref: '#/definitions/api.Customer'
+        "400":
+          description: Bad Request
           schema:
-            $ref: '#/definitions/main.ErrorResponse'
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
       summary: Update a customer
       tags:
-      - pkg
+      - customers
 swagger: "2.0"

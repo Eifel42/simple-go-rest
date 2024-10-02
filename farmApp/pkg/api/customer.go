@@ -1,4 +1,4 @@
-package model
+package api
 
 type Customer struct {
 	ID        int    `json:"id"`
@@ -7,4 +7,8 @@ type Customer struct {
 	Email     string `json:"email"`
 	Phone     string `json:"phone"`
 	Contacted bool   `json:"contacted"`
+}
+
+type ErrorResponse struct {
+	Message string `json:"message"`
 }

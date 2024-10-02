@@ -15,24 +15,30 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/pkg": {
+        "/customers": {
             "get": {
-                "description": "Get all pkg",
+                "description": "Get all customers",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "pkg"
+                    "customers"
                 ],
-                "summary": "Get all pkg",
+                "summary": "Get all customers",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/pkg.Customer"
+                                "$ref": "#/definitions/api.Customer"
                             }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -46,17 +52,17 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "pkg"
+                    "customers"
                 ],
                 "summary": "Add a new customer",
                 "parameters": [
                     {
-                        "description": "Customer to add",
+                        "description": "Customer",
                         "name": "customer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pkg.Customer"
+                            "$ref": "#/definitions/api.Customer"
                         }
                     }
                 ],
@@ -64,20 +70,32 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/pkg.Customer"
+                            "$ref": "#/definitions/api.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/pkg/{id}": {
+        "/customers/{id}": {
             "get": {
                 "description": "Get a customer by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "pkg"
+                    "customers"
                 ],
                 "summary": "Get a customer by ID",
                 "parameters": [
@@ -93,13 +111,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pkg.Customer"
+                            "$ref": "#/definitions/api.Customer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/pkg.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -113,7 +143,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "pkg"
+                    "customers"
                 ],
                 "summary": "Update a customer",
                 "parameters": [
@@ -125,12 +155,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Customer to update",
+                        "description": "Customer",
                         "name": "customer",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pkg.Customer"
+                            "$ref": "#/definitions/api.Customer"
                         }
                     }
                 ],
@@ -138,13 +168,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/pkg.Customer"
+                            "$ref": "#/definitions/api.Customer"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/pkg.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -152,7 +188,7 @@ const docTemplate = `{
             "delete": {
                 "description": "Delete a customer",
                 "tags": [
-                    "pkg"
+                    "customers"
                 ],
                 "summary": "Delete a customer",
                 "parameters": [
@@ -168,10 +204,16 @@ const docTemplate = `{
                     "204": {
                         "description": "No Content"
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/pkg.ErrorResponse"
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -179,7 +221,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "pkg.Customer": {
+        "api.Customer": {
             "type": "object",
             "properties": {
                 "contacted": {
@@ -202,7 +244,7 @@ const docTemplate = `{
                 }
             }
         },
-        "pkg.ErrorResponse": {
+        "api.ErrorResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -220,7 +262,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Farm Customer API",
-	Description:      "This is a simple API for managing farm pkg.",
+	Description:      "This is a simple API for managing farm customers.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

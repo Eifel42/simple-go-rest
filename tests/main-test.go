@@ -1,7 +1,7 @@
 package tests
 
 import (
-	handler2 "customers/routeHandler"
+	handler2 "customers/handler"
 	"net/http"
 	"net/http/httptest"
 	"strings"
