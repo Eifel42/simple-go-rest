@@ -21,6 +21,7 @@ cd farmApp
 1. **Install Go**: Follow the instructions on the [official Go website](https://golang.org/doc/install) to install Go on your machine.
 2. **Initialize Go Modules**: Run the following command to initialize Go modules.
     ```bash
+    cd farmApp
     go mod tidy
     ```
 3. **Run the Application**: Use the following command to run the application.
