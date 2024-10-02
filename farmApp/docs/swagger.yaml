@@ -1,0 +1,137 @@
+basePath: /
+definitions:
+  main.Customer:
+    properties:
+      contacted:
+        type: boolean
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+    type: object
+  main.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple API for managing farm pkg.
+  title: Farm Customer API
+  version: "1.0"
+paths:
+  /customers:
+    get:
+      description: Get all pkg
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.Customer'
+            type: array
+      summary: Get all pkg
+      tags:
+      - pkg
+    post:
+      consumes:
+      - application/json
+      description: Add a new customer
+      parameters:
+      - description: Customer to add
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/main.Customer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Customer'
+      summary: Add a new customer
+      tags:
+      - pkg
+  /customers/{id}:
+    delete:
+      description: Delete a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Delete a customer
+      tags:
+      - pkg
+    get:
+      description: Get a customer by ID
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Customer'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Get a customer by ID
+      tags:
+      - pkg
+    put:
+      consumes:
+      - application/json
+      description: Update a customer
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Customer to update
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/main.Customer'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Customer'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.ErrorResponse'
+      summary: Update a customer
+      tags:
+      - pkg
+swagger: "2.0"
